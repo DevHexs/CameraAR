@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.CameraFragment">
+
+    <SurfaceView
+        android:id="@+id/surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/white"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btnChangeCamera"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/change_Camera"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btnTakeCamera"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/take_Photo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnChangeCamera" />
+
+        <Button
+            android:id="@+id/btnSwitchEffect"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/switch_Camera"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.753"
+            app:layout_constraintStart_toEndOf="@+id/btnTakeCamera" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

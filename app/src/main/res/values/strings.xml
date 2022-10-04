@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Camera AR</string>
+    <string name="camera_ar">Camera AR</string>
+    <string name="go">Go</string>
+    <string name="deep_ar_key">24b98658f7db7f7112b9d7772e320b666c9837a34b5b39cae9c89fb988909f18cef73d02f8efdb9b</string>
+
+    <string name="take_Photo">Take Photo</string>
+    <string name="change_Camera">Change Camera</string>
+    <string name="switch_Camera">Switch Effect</string>
+</resources>
