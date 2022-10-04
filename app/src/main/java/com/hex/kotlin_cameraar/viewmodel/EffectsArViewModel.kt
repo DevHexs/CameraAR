@@ -16,10 +16,12 @@ class EffectsArViewModel : ViewModel() {
             "file:///android_asset/$filterName"
     }
 
-    fun changeEffectsAR(i: Int) : String? {
-        val effectName = effectProvider.getEffectFile(i).effectFile
-        Log.d("Effect",effectName)
-        return getFilterPath(effectName)
+    fun changeEffectsAR(i: Int) : ArrayList<String> {
+        val paths = ArrayList<String>()
+        val effect = effectProvider.getEffectFile(i)
+        paths.add(getFilterPath(effect.effectFile)!!)
+        paths.add(effect.thumbnailFile)
+        return paths
     }
 
     fun getEffectsSize(): Int {

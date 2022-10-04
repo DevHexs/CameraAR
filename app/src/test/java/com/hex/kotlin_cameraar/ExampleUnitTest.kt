@@ -32,10 +32,18 @@ class ExampleUnitTest() {
 
     @Test
     fun changeEffectsAR() {
-        for (i in 0..effectTotal){
-            val effectName = effect.getEffectFile(i).effectFile
-            println("file:///android_asset/$effectName")
-        }
+        val paths = ArrayList<String>()
+        val effect = effect.getEffectFile(1)
+        paths.add(getFilterPath(effect.effectFile)!!)
+        paths.add(getFilterPath(effect.thumbnailFile)!!)
+        println(paths)
+    }
+
+    private fun getFilterPath(filterName: String): String? {
+        return if (filterName == "none")
+            null
+        else
+            "file:///android_asset/$filterName"
     }
 
 }

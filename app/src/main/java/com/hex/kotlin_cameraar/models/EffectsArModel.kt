@@ -9,8 +9,8 @@ data class EffectsArModel(
 class EffectProvider(){
     private val effect = listOf<EffectsArModel>(
         EffectsArModel("none","none"),
-        EffectsArModel("viking_helmet.deepar","viking_helmet.png"),
         EffectsArModel("Vendetta_Mask.deepar","Vendetta_Mask.png"),
+        EffectsArModel("viking_helmet.deepar","viking_helmet.png"),
         EffectsArModel("flower_face.deepar","flower_face.png"),
     )
 

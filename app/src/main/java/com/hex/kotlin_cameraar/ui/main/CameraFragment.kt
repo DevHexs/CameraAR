@@ -8,6 +8,7 @@ import android.Manifest
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.media.Image
 import android.os.Build
 import android.os.Bundle
@@ -27,6 +28,7 @@ import com.hex.kotlin_cameraar.R
 import com.hex.kotlin_cameraar.databinding.FragmentCameraBinding
 import com.hex.kotlin_cameraar.utils.ARSurfaceProvider
 import com.hex.kotlin_cameraar.viewmodel.EffectsArViewModel
+import java.io.InputStream
 import java.util.concurrent.ExecutionException
 
 
@@ -74,8 +76,7 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
 
     private fun initializeOnClick(){
         binding.btnSwitchEffect.setOnClickListener {
-            currentEffect = (currentEffect + 1) % viewModel.getEffectsSize()
-            deepAR?.switchEffect("effect", viewModel.changeEffectsAR(currentEffect))
+            switchEffect()
         }
     }
 
@@ -171,6 +172,16 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
                 }
             }
         return orientation
+    }
+
+    private fun switchEffect(){
+        currentEffect = (currentEffect + 1) % viewModel.getEffectsSize()
+        val effectPaths = viewModel.changeEffectsAR(currentEffect)
+        deepAR?.switchEffect("effect", effectPaths[0])
+
+        val img: InputStream = requireContext().assets.open(effectPaths[1])
+        val drawable: Drawable = Drawable.createFromStream(img,null)
+        binding.imgThumbnail.setImageDrawable(drawable)
     }
 
     override fun onStart() {
