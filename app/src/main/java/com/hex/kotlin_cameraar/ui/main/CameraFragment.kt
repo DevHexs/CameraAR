@@ -10,11 +10,15 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.Image
+import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.text.format.DateFormat
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraSelector.Builder
 import androidx.camera.core.Preview
@@ -28,7 +32,10 @@ import com.hex.kotlin_cameraar.R
 import com.hex.kotlin_cameraar.databinding.FragmentCameraBinding
 import com.hex.kotlin_cameraar.utils.ARSurfaceProvider
 import com.hex.kotlin_cameraar.viewmodel.EffectsArViewModel
+import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStream
+import java.util.*
 import java.util.concurrent.ExecutionException
 
 
@@ -77,6 +84,10 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
     private fun initializeOnClick(){
         binding.btnSwitchEffect.setOnClickListener {
             switchEffect()
+        }
+
+        binding.btnTakeCamera.setOnClickListener {
+            deepAR?.takeScreenshot()
         }
     }
 
@@ -174,14 +185,20 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         return orientation
     }
 
+    // LifeCycle Methods
     private fun switchEffect(){
         currentEffect = (currentEffect + 1) % viewModel.getEffectsSize()
         val effectPaths = viewModel.changeEffectsAR(currentEffect)
         deepAR?.switchEffect("effect", effectPaths[0])
 
-        val img: InputStream = requireContext().assets.open(effectPaths[1])
-        val drawable: Drawable = Drawable.createFromStream(img,null)
-        binding.imgThumbnail.setImageDrawable(drawable)
+        if (effectPaths[1] != " none") {
+            val img: InputStream = requireContext().assets.open(effectPaths[1])
+            val drawable: Drawable = Drawable.createFromStream(img, null)
+            binding.imgThumbnail.setImageDrawable(drawable)
+        }
+        else {
+            binding.imgThumbnail.setImageDrawable(null)
+        }
     }
 
     override fun onStart() {
@@ -250,11 +267,26 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         super.onDestroy()
     }
 
-    // LifeCycle
-
-
     // ARListener Interface
-    override fun screenshotTaken(p0: Bitmap?) {}
+    override fun screenshotTaken(bitmap: Bitmap) {
+        val now: CharSequence = DateFormat.format("yyyy_MM_dd_hh_mm_ss", Date())
+        try {
+            val imageFile = File(context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                "image_$now.jpg")
+            val outputStream = FileOutputStream(imageFile)
+            val quality = 100
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            outputStream.flush()
+            outputStream.close()
+            MediaScannerConnection.scanFile(requireActivity(), arrayOf(imageFile.toString()),
+                null, null)
+            Toast.makeText(requireActivity(),
+                "Screenshot " + imageFile.name.toString() + " saved.",
+                Toast.LENGTH_SHORT).show()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
 
     override fun videoRecordingStarted() {}
 
