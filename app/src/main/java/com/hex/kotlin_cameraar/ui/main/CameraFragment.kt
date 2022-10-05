@@ -89,7 +89,6 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
 
         binding.btnTakeCamera.setOnClickListener {
             if (binding.btnIsRecording.isChecked && !isRecording){
-                getFileName()
                 startVideoRecording()
             }else if (binding.btnIsRecording.isChecked && isRecording ){
                 stopVideoRecording()
@@ -237,6 +236,7 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
     }
 
     private fun startVideoRecording(){
+        videoFileName = getFileName()
         deepAR?.startVideoRecording(videoFileName.toString(),
             width / 2, height / 2)
         Toast.makeText(requireActivity(), "Recording started.", Toast.LENGTH_SHORT).show()
@@ -248,11 +248,12 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         Toast.makeText(requireActivity(), "Recording " + videoFileName?.name +
                 " saved.", Toast.LENGTH_LONG).show()
         isRecording = !isRecording
+        videoFileName = null
     }
 
-    private fun getFileName(){
+    private fun getFileName(): File{
         val now = DateFormat.format("yyyy_MM_dd_hh_mm_ss", Date())
-        videoFileName = File(context?.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
+        return File(context?.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
                 "video_$now.mp4")
     }
 
