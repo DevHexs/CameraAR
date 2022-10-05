@@ -19,8 +19,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.CameraSelector.Builder
+import androidx.camera.core.CameraSelector.*
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
@@ -50,7 +49,7 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
     // CameraX
     private var cameraProvideFuture: ListenableFuture<ProcessCameraProvider>? = null
     private var surfaceProvider: ARSurfaceProvider? = null
-    private var lensFacing = CameraSelector.LENS_FACING_FRONT
+    private var lensFacing = LENS_FACING_FRONT
 
     // Image Buffers
     private var height = 0
@@ -88,6 +87,10 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
 
         binding.btnTakeCamera.setOnClickListener {
             deepAR?.takeScreenshot()
+        }
+
+        binding.btnChangeCamera.setOnClickListener {
+            changeCamera()
         }
     }
 
@@ -134,7 +137,7 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         }
 
         preview.setSurfaceProvider(surfaceProvider)
-        surfaceProvider?.isMirror = lensFacing == CameraSelector.LENS_FACING_FRONT
+        surfaceProvider?.isMirror = lensFacing == LENS_FACING_FRONT
     }
 
     private fun getScreenOrientation(): Int {
@@ -185,7 +188,6 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         return orientation
     }
 
-    // LifeCycle Methods
     private fun switchEffect(){
         currentEffect = (currentEffect + 1) % viewModel.getEffectsSize()
         val effectPaths = viewModel.changeEffectsAR(currentEffect)
@@ -201,6 +203,29 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         }
     }
 
+    private fun changeCamera(){
+        lensFacing = when(lensFacing){
+            LENS_FACING_FRONT   -> LENS_FACING_BACK
+            LENS_FACING_BACK    -> LENS_FACING_FRONT
+            else -> LENS_FACING_FRONT
+        }
+        unbindCamera()
+        cameraArOpen()
+    }
+
+    private fun unbindCamera(){
+        val cameraProvider: ProcessCameraProvider
+        try {
+            cameraProvider = cameraProvideFuture!!.get()
+            cameraProvider.unbindAll()
+        } catch (e: ExecutionException) {
+            e.printStackTrace()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+    }
+
+    // LifeCycle Methods
     override fun onStart() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
