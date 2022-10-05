@@ -50,6 +50,8 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
     private var cameraProvideFuture: ListenableFuture<ProcessCameraProvider>? = null
     private var surfaceProvider: ARSurfaceProvider? = null
     private var lensFacing = LENS_FACING_FRONT
+    private var isRecording: Boolean = false
+    private var videoFileName: File? =  null
 
     // Image Buffers
     private var height = 0
@@ -86,7 +88,16 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         }
 
         binding.btnTakeCamera.setOnClickListener {
-            deepAR?.takeScreenshot()
+            if (binding.btnIsRecording.isChecked && !isRecording){
+                getFileName()
+                startVideoRecording()
+            }else if (binding.btnIsRecording.isChecked && isRecording ){
+                stopVideoRecording()
+
+            }else{
+                deepAR?.takeScreenshot()
+            }
+
         }
 
         binding.btnChangeCamera.setOnClickListener {
@@ -223,6 +234,26 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
+    }
+
+    private fun startVideoRecording(){
+        deepAR?.startVideoRecording(videoFileName.toString(),
+            width / 2, height / 2)
+        Toast.makeText(requireActivity(), "Recording started.", Toast.LENGTH_SHORT).show()
+        isRecording = !isRecording
+    }
+
+    private fun stopVideoRecording(){
+        deepAR?.stopVideoRecording()
+        Toast.makeText(requireActivity(), "Recording " + videoFileName?.name +
+                " saved.", Toast.LENGTH_LONG).show()
+        isRecording = !isRecording
+    }
+
+    private fun getFileName(){
+        val now = DateFormat.format("yyyy_MM_dd_hh_mm_ss", Date())
+        videoFileName = File(context?.getExternalFilesDir(Environment.DIRECTORY_MOVIES),
+                "video_$now.mp4")
     }
 
     // LifeCycle Methods
