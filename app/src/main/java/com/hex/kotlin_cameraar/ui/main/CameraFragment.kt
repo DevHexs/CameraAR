@@ -8,6 +8,8 @@ import android.Manifest
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.media.Image
 import android.media.MediaScannerConnection
@@ -257,6 +259,14 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
                 "video_$now.mp4")
     }
 
+    private fun flashScreenAnimation(){
+        binding.root.postDelayed({
+            binding.root.foreground = ColorDrawable(Color.WHITE)
+            binding.root.postDelayed({
+                binding.root.foreground = null }, 100L)
+        },250L)
+    }
+
     // LifeCycle Methods
     override fun onStart() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
@@ -326,6 +336,7 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
 
     // ARListener Interface
     override fun screenshotTaken(bitmap: Bitmap) {
+        flashScreenAnimation()
         val now: CharSequence = DateFormat.format("yyyy_MM_dd_hh_mm_ss", Date())
         try {
             val imageFile = File(context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
