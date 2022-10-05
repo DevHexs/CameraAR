@@ -10,38 +10,40 @@ import org.junit.Test
  */
 class ExampleUnitTest() {
 
-    private val effect = EffectProvider()
-    private val effectTotal = effect.getEffectSizeList() - 1
 
     @Test
     fun getEffectFileTest() {
-        println(effect.getEffectFile(1))
-        println(effect.getEffectFile(2))
-        println(effect.getEffectFile(3))
+        val effects = EffectProvider()
+        println(effects.getEffectFile(1))
+        println(effects.getEffectFile(2))
+        println(effects.getEffectFile(3))
     }
 
     @Test
     fun getEffectSizeTest(){
-        println(effect.getEffectSizeList())
+        val effects= EffectProvider()
+        println(effects.getEffectSizeList())
     }
 
     @Test
     fun getEffectFilePathTest(){
-        println(effect.getEffectFile(1).effectFile)
+        val effects = EffectProvider()
+        println(effects.getEffectFile(0).effectFile)
     }
 
     @Test
     fun changeEffectsAR() {
+        val effects = EffectProvider()
         val paths = ArrayList<String>()
-        val effect = effect.getEffectFile(1)
-        paths.add(getFilterPath(effect.effectFile)!!)
-        paths.add(getFilterPath(effect.thumbnailFile)!!)
+        //val effects = effect.getEffectFile(0)
+        paths.add(getFilterPath(effects.getEffectFile(0).effectFile))
+        paths.add(getFilterPath(effects.getEffectFile(0).thumbnailFile))
         println(paths)
     }
 
-    private fun getFilterPath(filterName: String): String? {
+    private fun getFilterPath(filterName: String): String {
         return if (filterName == "none")
-            null
+            "none"
         else
             "file:///android_asset/$filterName"
     }

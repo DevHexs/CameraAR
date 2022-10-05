@@ -191,7 +191,7 @@ class CameraFragment : Fragment(), AREventListener, SurfaceHolder.Callback {
         val effectPaths = viewModel.changeEffectsAR(currentEffect)
         deepAR?.switchEffect("effect", effectPaths[0])
 
-        if (effectPaths[1] != " none") {
+        if (effectPaths[1] != "none") {
             val img: InputStream = requireContext().assets.open(effectPaths[1])
             val drawable: Drawable = Drawable.createFromStream(img, null)
             binding.imgThumbnail.setImageDrawable(drawable)

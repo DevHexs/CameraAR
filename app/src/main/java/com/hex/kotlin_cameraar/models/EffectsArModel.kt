@@ -7,7 +7,7 @@ data class EffectsArModel(
     )
 
 class EffectProvider(){
-    private val effect = listOf<EffectsArModel>(
+    private val effects = listOf<EffectsArModel>(
         EffectsArModel("none","none"),
         EffectsArModel("Vendetta_Mask.deepar","Vendetta_Mask.png"),
         EffectsArModel("viking_helmet.deepar","viking_helmet.png"),
@@ -16,10 +16,10 @@ class EffectProvider(){
 
 
     fun getEffectFile(i: Int): EffectsArModel {
-        return effect[i]
+        return effects[i]
     }
 
     fun getEffectSizeList(): Int {
-        return effect.size
+        return effects.size
     }
 }
